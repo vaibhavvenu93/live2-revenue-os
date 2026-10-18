@@ -4,12 +4,20 @@
     {
       "src": "web/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "data/accounts.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
       "dest": "/web/index.html"
+    },
+    {
+      "src": "/data/accounts.json",
+      "dest": "/data/accounts.json"
     },
     {
       "src": "/(.*)",
