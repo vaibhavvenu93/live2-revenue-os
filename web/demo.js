@@ -82,6 +82,7 @@ window.fetch=async(input,init={})=>{
  if(init.body)persist();return json(result);
  }catch(e){return json({error:String(e.message||e)},400)}
 };
+document.addEventListener('click',e=>{const link=e.target.closest('a[href^="/api/export?"]');if(!link)return;e.preventDefault();ready.then(()=>{const table=new URLSearchParams(link.getAttribute('href').split('?')[1]).get('table');if(!['accounts','signals','contacts','tasks','deals','experiments','activities'].includes(table))return;const rows=state[table];const columns=[...new Set(rows.flatMap(r=>Object.keys(r)))];const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[columns.map(quote).join(','),...rows.map(r=>columns.map(k=>quote(r[k])).join(','))].join('\\r\\n');const blob=new Blob(['\\ufeff'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='live2_demo_'+table+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)})});
 const ready=initialize();
 window.LIVE2_DEMO={ready,reset(){if(confirm('Reset all browser-only demo changes?')){localStorage.removeItem(KEY);location.reload()}},download(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='live2-demo-backup.json';a.click();URL.revokeObjectURL(u)}};
 ready.then(()=>{
